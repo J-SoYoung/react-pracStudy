@@ -1,0 +1,9 @@
+@import "./reset.css";
+
+.App {
+  width: 480px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid gray;
+}
