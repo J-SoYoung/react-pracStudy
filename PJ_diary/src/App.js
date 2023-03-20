@@ -8,7 +8,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/detail" element={<Detailpage />} />
-        <Route path="/" element={<Postpage />} />
       </Routes>
     </div>
   );
