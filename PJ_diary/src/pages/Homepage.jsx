@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { DiaryEdit, DiaryList } from "../components/index";
+import { Lifecycle } from "../components/Lifecycle";
 
 export const Homepage = () => {
   const [diarylist, setDiarylist] = useState([]);
@@ -34,6 +35,7 @@ export const Homepage = () => {
 
   return (
     <>
+      <Lifecycle />
       <Main>
         <DiaryEdit onCreate={onCreate} />
       </Main>
