@@ -1,22 +1,21 @@
-import React from "react";
-import styled from "styled-components";
-import { Title } from "../styles/HomeStyle";
-import { DiaryItem } from "./DiaryItem";
+import DiaryItem from "./DiaryItem";
 
-export const DiaryList = ({ diarylist, onDelete, onEdit }) => {
+const DiaryList = ({ onEdit, onRemove, diaryList }) => {
   return (
-    <>
-      <Title>일기 리스트</Title>
-      <p>{diarylist.length}개의 일기가 있습니다</p>
-      <ArticleList>
-        {diarylist.map((item, index) => {
-          return <DiaryItem item={item} key={index} onDelete={onDelete} onEdit={onEdit} />;
-        })}
-      </ArticleList>
-    </>
+    <div className="DiaryList">
+      <h2>일기 리스트</h2>
+      <h4>{diaryList.length}개의 일기가 있습니다.</h4>
+      <div>
+        {diaryList.map((it) => (
+          <DiaryItem key={it.id} {...it} onEdit={onEdit} onRemove={onRemove} />
+        ))}
+      </div>
+    </div>
   );
 };
-const ArticleList = styled.article`
-  /* border: 1px solid blue; */
-  margin-top: 20px;
-`;
+
+DiaryList.defaultProps = {
+  diaryList: []
+};
+
+export default DiaryList;
