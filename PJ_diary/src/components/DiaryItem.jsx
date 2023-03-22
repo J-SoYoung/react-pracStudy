@@ -1,95 +1,80 @@
-import React, { useState, useRef } from "react";
-import styled from "styled-components";
+import { memo, useEffect, useRef, useState } from "react";
 
-export const DiaryItem = ({ item, onDelete, onEdit }) => {
-  const { name, content, emotion, create_date, id } = item;
-  const [isEdit, setIsEdit] = useState(false);
-  const [localContent, setLocalContent] = useState(item.content);
+const DiaryItem = ({
+  onRemove,
+  onEdit,
+  id,
+  author,
+  content,
+  emotion,
+  created_date
+}) => {
+  useEffect(() => {
+    console.log(`${id}번 일기아이템 렌더`);
+  });
+
   const localContentInput = useRef();
+  const [localContent, setLocalContent] = useState(content);
+  const [isEdit, setIsEdit] = useState(false);
+  const toggleIsEdit = () => setIsEdit(!isEdit);
 
-  const handleClickRemove = (id) => {
+  const handleClickRemove = () => {
     if (window.confirm(`${id}번째 일기를 정말 삭제하시겠습니까?`)) {
-      onDelete(id);
+      onRemove(id);
     }
   };
 
-  const handleClickEdit = (id) => {
-    if (window.confirm(`${id}번째 일기를 수정하시겠습니까?`)) {
+  const handleQuitEdit = () => {
+    setIsEdit(false);
+    setLocalContent(content);
+  };
+
+  const handleEdit = () => {
+    if (localContent.length < 5) {
+      localContentInput.current.focus();
+      return;
+    }
+
+    if (window.confirm(`${id}번 째 일기를 수정하시겠습니까?`)) {
       onEdit(id, localContent);
-      setIsEdit(false);
+      toggleIsEdit();
     }
   };
-  return (
-    <SectionItem>
-      <p>작성자 : {name}</p>
-      <p>오늘의 감정 : {emotion}</p>
-      <p>{new Date(create_date).toLocaleString()}</p>
 
-      {isEdit ? (
-        <div>
+  return (
+    <div className="DiaryItem">
+      <div className="info">
+        <span className="author_info">
+          작성자 : {author} | 감정 : {emotion}
+        </span>
+        <br />
+        <span className="date">
+          {new Date(created_date).toLocaleDateString()}
+        </span>
+      </div>
+      <div className="content">
+        {isEdit ? (
           <textarea
             ref={localContentInput}
             value={localContent}
             onChange={(e) => setLocalContent(e.target.value)}
-            style={{ width: "100%" }}
           />
-        </div>
-      ) : (
-        <div>{item.content}</div>
-      )}
-
+        ) : (
+          content
+        )}
+      </div>
       {isEdit ? (
         <>
-          <button
-            onClick={() => {
-              setIsEdit(false);
-            }}
-          >
-            취소
-          </button>
-          <button
-            onClick={() => {
-              handleClickEdit(id);
-            }}
-          >
-            수정완료
-          </button>
+          <button onClick={handleQuitEdit}>수정 취소</button>
+          <button onClick={handleEdit}>수정 완료</button>
         </>
       ) : (
         <>
-          <button
-            onClick={() => {
-              handleClickRemove(id);
-            }}
-          >
-            삭제
-          </button>
-          <button
-            onClick={() => {
-              setIsEdit(true);
-            }}
-          >
-            수정하기
-          </button>
+          <button onClick={handleClickRemove}>삭제하기</button>
+          <button onClick={toggleIsEdit}>수정하기</button>
         </>
       )}
-    </SectionItem>
+    </div>
   );
 };
-
-const SectionItem = styled.section`
-  margin-bottom: 16px;
-  padding: 10px;
-  box-sizing: border-box;
-  background-color: #e6e6e6;
-  p {
-    margin-bottom: 5px;
-    font-size: 14px;
-  }
-  div {
-    margin: 10px 0;
-    padding-top: 10px;
-    box-sizing: border-box;
-    border-top: 1px solid gray;
-  }
-`;
+export default memo(DiaryItem);

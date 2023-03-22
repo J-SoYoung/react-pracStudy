@@ -1,90 +1,86 @@
-import React, { useRef, useState } from "react";
-import styled from "styled-components";
-import { Title } from "../styles/HomeStyle";
+import React, { useEffect, useRef, useState } from "react";
 
-export const DiaryEdit = ({ onCreate }) => {
-  const [state, setState] = useState({
-    name: "",
-    content: "",
-    emotion: "happy",
+const DiaryEditor = React.memo(({ onCreate }) => {
+  useEffect(() => {
+    console.log("DiaryEditor 렌더");
   });
-
-  const nameInput = useRef();
+  const authorInput = useRef();
   const contentInput = useRef();
 
-  const onChangeValue = (e) => {
+  const [state, setState] = useState({
+    author: "",
+    content: "",
+    emotion: 1
+  });
+
+  const handleChangeState = (e) => {
     setState({
       ...state,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
   };
 
-  const handleCreateDiary = (e) => {
-    e.preventDefault();
-    if (state.name.length < 1) {
-      alert("작성자는 최소 1글자 이상 작성해주세요");
-      nameInput.current.focus();
+  const handleSubmit = () => {
+    if (state.author.length < 1) {
+      authorInput.current.focus();
       return;
     }
 
     if (state.content.length < 5) {
-      alert("일기본문은 최소 5글자 이상 작성해주세요");
       contentInput.current.focus();
       return;
     }
-    onCreate(state.name, state.content, state.emotion);
+
+    onCreate(state.author, state.content, state.emotion);
+    alert("저장 성공");
     setState({
-      name: "",
+      author: "",
       content: "",
-      emotion: "happy",
+      emotion: 1
     });
   };
 
   return (
-    <div>
-      <Title>오늘의 일기</Title>
-      <form onSubmit={handleCreateDiary}>
-        <Section>
-          <input
-            ref={nameInput}
-            name="name"
-            type="text"
-            value={state.name || ""}
-            placeholder="작성자"
-            onChange={onChangeValue}
-          />
-        </Section>
-        <Section>
-          <textarea
-            ref={contentInput}
-            name="content"
-            value={state.content || ""}
-            placeholder="일기내용"
-            onChange={onChangeValue}
-          />
-        </Section>
-        <Section>
-          오늘의 감정점수&nbsp;:&nbsp;
-          <select name="emotion" value={state.emotion || ""} onChange={onChangeValue}>
-            <option value={"happy"}>happy</option>
-            <option value={"lovely"}>lovely</option>
-            <option value={"sad"}>sad</option>
-            <option value={"angry"}>angry</option>
-          </select>
-        </Section>
-        <button type="submit">일기 저장하기</button>
-      </form>
+    <div className="DiaryEditor">
+      <h2>오늘의 일기</h2>
+      <div>
+        <input
+          ref={authorInput}
+          value={state.author}
+          onChange={handleChangeState}
+          name="author"
+          placeholder="작성자"
+          type="text"
+        />
+      </div>
+      <div>
+        <textarea
+          ref={contentInput}
+          value={state.content}
+          onChange={handleChangeState}
+          name="content"
+          placeholder="일기"
+          type="text"
+        />
+      </div>
+      <div>
+        <span>오늘의 감정점수 : </span>
+        <select
+          name="emotion"
+          value={state.emotion}
+          onChange={handleChangeState}
+        >
+          <option value={1}>1</option>
+          <option value={2}>2</option>
+          <option value={3}>3</option>
+          <option value={4}>4</option>
+          <option value={5}>5</option>
+        </select>
+      </div>
+      <div>
+        <button onClick={handleSubmit}>일기 저장하기</button>
+      </div>
     </div>
   );
-};
-
-const Section = styled.section`
-  width: 100%;
-  margin-bottom: 10px;
-  & > input,
-  textarea {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-  }
-`;
+});
+export default DiaryEditor;
